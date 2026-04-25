@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriVision — AI Crop Health Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo" onclick="showPage('page-home')">
+    <div class="logo-icon">🌿</div>
+    <span>AgriVision</span>
+  </div>
+  <div class="nav-steps">
+    <div class="step active" id="step1" onclick="showPage('page-home')">
+      <div class="step-num">01</div><div class="step-label">Upload</div>
+    </div>
+    
+    <div class="step-line"></div>
+    <div class="step" id="step2">
+      <div class="step-num">02</div><div class="step-label">Results</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step3">
+      <div class="step-num">03</div><div class="step-label">Analysis</div>
+    </div>
+  </div>
+  <div class="nav-badge">Xypheria 2026</div>
+<label class="theme-toggle" id="theme-toggle" title="Toggle theme">
+  <span class="sun-icon">☀️</span>
+  <div class="toggle-track"><div class="toggle-thumb"></div></div>
+  <span class="moon-icon">🌙</span>
+</label>
+  
+</nav>
+
+
+<!-- ══════════════ PAGE 1: HOME ══════════════ -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-tag">🛰️ Satellite + AI Technology</div>
+      <h1 class="hero-title">Detect Crop Disease<br><em>Before It Destroys</em><br>Your Harvest</h1>
+      <p class="hero-sub">Choose your analysis mode and upload an image. Our AI delivers instant disease detection with actionable treatment advice.</p>
+      <div class="hero-stats">
+        <div class="hstat"><strong>₹90,000 Cr</strong><span>lost annually to crop disease</span></div>
+        <div class="hstat-divider"></div>
+        <div class="hstat"><strong>70%</strong><span>farmers detect disease too late</span></div>
+        <div class="hstat-divider"></div>
+        <div class="hstat"><strong>500 Acres</strong><span>covered in one satellite pass</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="upload-section">
+    <div class="upload-card">
+      <div class="upload-card-header">
+        <h2>Analyze Your Crop</h2>
+        <p>Select mode then upload your image</p>
+      </div>
+      <div class="mode-select">
+        <button class="mode-btn active" id="leafMode" onclick="setMode('leaf')">🌿 Analyze Leaf Disease</button>
+        <button class="mode-btn" id="fieldMode" onclick="setMode('field')">🛰️ Analyze Field Health</button>
+      </div>
+      <div class="mode-desc" id="mode-desc">📌 Upload a close-up photo of a crop leaf to detect disease, get medicine and treatment advice.</div>
+      <div class="dropzone" id="dropzone" onclick="document.getElementById('imageInput').click()">
+        <div class="dropzone-inner" id="dropzone-inner">
+          <div class="dropzone-icon">📷</div>
+          <div class="dropzone-text" id="dropzone-text">Drop your leaf image here</div>
+          <div class="dropzone-sub">or click to browse — JPG, PNG, WEBP supported</div>
+        </div>
+        <img id="preview" src="" alt="Preview">
+        <input type="file" id="imageInput" accept="image/*" onchange="previewImage()" style="display:none">
+      </div>
+      <div class="upload-actions">
+        <div class="file-info" id="file-info"></div>
+        <button class="btn-primary" id="analyzeBtn" onclick="analyzeImage()" disabled>
+          <span class="btn-icon">🔍</span>
+          <span id="analyzeText">Analyze Leaf</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+      <div class="loading-bar" id="loading-bar">
+        <div class="loading-track"><div class="loading-fill" id="loading-fill"></div></div>
+        <div class="loading-text">AI is analyzing your image...</div>
+      </div>
+    </div>
+
+    <div class="how-it-works">
+      <h3>How AgriVision Works</h3>
+      <div class="steps-row">
+        <div class="step-card"><div class="step-icon">📤</div><div class="step-title">Upload Image</div><div class="step-desc">Leaf photo or satellite field image</div></div>
+        <div class="steps-arrow">→</div>
+        <div class="step-card"><div class="step-icon">🧠</div><div class="step-title">AI Analysis</div><div class="step-desc">CNN model detects disease patterns</div></div>
+        <div class="steps-arrow">→</div>
+        <div class="step-card"><div class="step-icon">💊</div><div class="step-title">Get Advice</div><div class="step-desc">Medicine, fertilizer, treatment</div></div>
+        <div class="steps-arrow">→</div>
+        <div class="step-card"><div class="step-icon">🗺️</div><div class="step-title">Field Map</div><div class="step-desc">NDVI map for field mode only</div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════ PAGE 2A: LEAF RESULTS ══════════════ -->
+<div class="page" id="page-leaf-results">
+  <section class="results-section">
+    <div class="results-header">
+      <div class="results-tag">🌿 Leaf Analysis Complete</div>
+      <h2>Disease Detection Report</h2>
+      <p>AI-powered leaf disease identification and treatment advice</p>
+    </div>
+    <div class="results-layout">
+      <div class="disease-card">
+        <div class="disease-top">
+          <div class="dis-icon" id="leaf-dis-icon">⚠️</div>
+          <div>
+            <div class="dis-eyebrow">Detected Condition</div>
+            <div class="dis-name" id="leaf-disease-name">—</div>
+          </div>
+          <div class="sev-pill" id="leaf-severity-badge">—</div>
+        </div>
+        <div class="disease-body">
+          <div class="detail-row">
+            <div class="detail-box"><div class="detail-lbl">🎯 Confidence</div><div class="detail-val" id="leaf-confidence-val">—</div></div>
+            <div class="detail-box"><div class="detail-lbl">⏱️ Act Within</div><div class="detail-val" id="leaf-action-window">—</div></div>
+          </div>
+          <div class="info-box medicine-box">
+            <div class="info-lbl">💊 Medicine</div>
+            <div class="info-text" id="leaf-medicine">—</div>
+          </div>
+          <div class="info-box fertilizer-box">
+            <div class="info-lbl">🌱 Fertilizer</div>
+            <div class="info-text" id="leaf-fertilizer">—</div>
+          </div>
+          <div class="info-box treatment-box">
+            <div class="info-lbl">🩺 Treatment Steps</div>
+            <div class="info-text" id="leaf-treatment">—</div>
+          </div>
+          <div class="result-actions">
+            <button class="btn-secondary" onclick="resetApp()">🔄 Analyze Another</button>
+          </div>
+        </div>
+      </div>
+      <div class="r-right">
+        <div class="r-card">
+          <div class="r-card-head">📷 Uploaded Image</div>
+          <img id="leaf-result-image" src="" alt="Uploaded" style="width:100%;height:200px;object-fit:cover;">
+          <div class="img-meta" id="leaf-img-meta">—</div>
+        </div>
+        <div class="r-card">
+          <div class="r-card-head">📊 Quick Stats</div>
+          <div class="r-card-body">
+            <div class="mini-stat"><div class="mini-stat-icon">🌡️</div><div><div class="mini-stat-label">Health Index</div><div class="mini-stat-value" id="leaf-health-index">—</div></div></div>
+            <div class="mini-stat"><div class="mini-stat-icon">⚡</div><div><div class="mini-stat-label">Risk Level</div><div class="mini-stat-value" id="leaf-risk-level">—</div></div></div>
+            <div class="mini-stat"><div class="mini-stat-icon">🌾</div><div><div class="mini-stat-label">Crop Status</div><div class="mini-stat-value" id="leaf-crop-status">—</div></div></div>
+            <div class="mini-stat"><div class="mini-stat-icon">📡</div><div><div class="mini-stat-label">Mode</div><div class="mini-stat-value">🌿 Leaf Mode</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════ PAGE 2B: FIELD RESULTS ══════════════ -->
+<div class="page" id="page-field-results">
+  <section class="results-section">
+    <div class="results-header">
+      <div class="results-tag">🛰️ Field Analysis Complete</div>
+      <h2>Field Health Report</h2>
+      <p>Satellite-grade risk assessment and field health distribution</p>
+    </div>
+
+    <div class="results-layout">
+      <div class="field-results-left">
+
+        <!-- RISK SCORE CARD -->
+        <div class="field-card risk-card">
+          <div class="field-card-title">⚠️ Field Risk Assessment</div>
+          <div class="risk-score-wrap">
+            <div class="risk-score-circle" id="risk-circle">
+              <svg width="140" height="140" viewBox="0 0 140 140">
+                <circle cx="70" cy="70" r="58" fill="none" stroke="#1e3a1e" stroke-width="12"/>
+                <circle cx="70" cy="70" r="58" fill="none" stroke="#22c55e" stroke-width="12"
+                  stroke-dasharray="364" stroke-dashoffset="364"
+                  stroke-linecap="round" transform="rotate(-90 70 70)"
+                  id="risk-circle-fill"/>
+              </svg>
+              <div class="risk-circle-inner">
+                <div class="risk-num" id="risk-score-num">--</div>
+                <div class="risk-label-sm">/ 100</div>
+              </div>
+            </div>
+            <div class="risk-details">
+              <div class="risk-detail-item">
+                <span class="risk-detail-label">Risk Level</span>
+                <span class="risk-detail-val" id="field-risk-level">—</span>
+              </div>
+              <div class="risk-detail-item">
+                <span class="risk-detail-label">Priority</span>
+                <span class="risk-detail-val" id="field-priority">—</span>
+              </div>
+              <div class="risk-detail-item">
+                <span class="risk-detail-label">Act Within</span>
+                <span class="risk-detail-val" id="field-action-window">—</span>
+              </div>
+              <div class="risk-detail-item">
+                <span class="risk-detail-label">NDVI Score</span>
+                <span class="risk-detail-val" id="field-ndvi-score">—</span>
+              </div>
+            </div>
+          </div>
+          <div class="risk-bar-wrap">
+            <div class="risk-bar-track">
+              <div class="risk-bar-fill" id="risk-bar-fill"></div>
+            </div>
+            <div class="risk-bar-labels">
+              <span>Safe</span><span>Moderate</span><span>Critical</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- AFFECTED AREA CARD -->
+        <div class="field-card area-card">
+          <div class="field-card-title">📊 Field Health Distribution</div>
+          <div class="area-chart-wrap">
+            <div class="area-donut">
+              <canvas id="donutCanvas" width="150" height="150"></canvas>
+              <div class="donut-center">
+                <div class="donut-pct" id="donut-healthy-pct">--%</div>
+                <div class="donut-lbl">Healthy</div>
+              </div>
+            </div>
+            <div class="area-legend">
+              <div class="area-legend-item">
+                <div class="area-dot" style="background:#22c55e"></div>
+                <div>
+                  <div class="area-legend-label">Healthy Zones</div>
+                  <div class="area-legend-val" id="area-healthy">--%</div>
+                </div>
+              </div>
+              <div class="area-legend-item">
+                <div class="area-dot" style="background:#eab308"></div>
+                <div>
+                  <div class="area-legend-label">Stressed Zones</div>
+                  <div class="area-legend-val" id="area-stressed">--%</div>
+                </div>
+              </div>
+              <div class="area-legend-item">
+                <div class="area-dot" style="background:#ef4444"></div>
+                <div>
+                  <div class="area-legend-label">Diseased Zones</div>
+                  <div class="area-legend-val" id="area-diseased">--%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="area-bars">
+            <div class="area-bar-item">
+              <span>Healthy</span>
+              <div class="area-bar-track"><div class="area-bar-fill" id="healthy-bar" style="background:#22c55e;width:0%"></div></div>
+              <span id="healthy-bar-pct">--%</span>
+            </div>
+            <div class="area-bar-item">
+              <span>Stressed</span>
+              <div class="area-bar-track"><div class="area-bar-fill" id="stressed-bar" style="background:#eab308;width:0%"></div></div>
+              <span id="stressed-bar-pct">--%</span>
+            </div>
+            <div class="area-bar-item">
+              <span>Diseased</span>
+              <div class="area-bar-track"><div class="area-bar-fill" id="diseased-bar" style="background:#ef4444;width:0%"></div></div>
+              <span id="diseased-bar-pct">--%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-actions" style="margin-top:16px;">
+          <button class="btn-primary" onclick="goToFieldNDVI()">
+            <span class="btn-icon">🗺️</span><span>View NDVI Map</span><span class="btn-arrow">→</span>
+          </button>
+          <button class="btn-secondary" onclick="resetApp()">🔄 Analyze Another</button>
+        </div>
+      </div>
+
+      <div class="r-right">
+        <div class="r-card">
+          <div class="r-card-head">📷 Uploaded Field Image</div>
+          <img id="field-result-image" src="" alt="Uploaded" style="width:100%;height:200px;object-fit:cover;">
+          <div class="img-meta" id="field-img-meta">—</div>
+        </div>
+        <div class="r-card">
+          <div class="r-card-head">📡 Analysis Info</div>
+          <div class="r-card-body">
+            <div class="mini-stat"><div class="mini-stat-icon">🛰️</div><div><div class="mini-stat-label">Data Source</div><div class="mini-stat-value">Sentinel-2</div></div></div>
+            <div class="mini-stat"><div class="mini-stat-icon">📊</div><div><div class="mini-stat-label">AI Confidence</div><div class="mini-stat-value" id="field-confidence">—</div></div></div>
+            <div class="mini-stat"><div class="mini-stat-icon">🌍</div><div><div class="mini-stat-label">Coverage</div><div class="mini-stat-value">500 Acres</div></div></div>
+            <div class="mini-stat"><div class="mini-stat-icon">📡</div><div><div class="mini-stat-label">Mode</div><div class="mini-stat-value">🛰️ Field Mode</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- WEATHER CARD -->
+<div class="field-card weather-card" id="weather-card">
+  <div class="field-card-title">🌤️ Weather Advisory</div>
+
+  <div class="weather-loading" id="weather-loading">
+    <div class="spinner"></div>
+    <span>Fetching weather data...</span>
+  </div>
+
+  <div class="weather-content" id="weather-content" style="display:none">
+
+    <!-- Current Weather -->
+    <div class="weather-current">
+      <div class="weather-stat">
+        <div class="weather-icon">🌡️</div>
+        <div>
+          <div class="weather-label">Temperature</div>
+          <div class="weather-val" id="w-temp">—</div>
+        </div>
+      </div>
+      <div class="weather-stat">
+        <div class="weather-icon">💧</div>
+        <div>
+          <div class="weather-label">Humidity</div>
+          <div class="weather-val" id="w-humidity">—</div>
+        </div>
+      </div>
+      <div class="weather-stat">
+        <div class="weather-icon">💨</div>
+        <div>
+          <div class="weather-label">Wind</div>
+          <div class="weather-val" id="w-wind">—</div>
+        </div>
+      </div>
+      <div class="weather-stat">
+        <div class="weather-icon">🌥️</div>
+        <div>
+          <div class="weather-label">Condition</div>
+          <div class="weather-val" id="w-desc">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Disease Risk from Weather -->
+    <div class="weather-advisory" id="w-disease-risk-box">
+      <div class="advisory-label">🦠 Disease Risk from Weather</div>
+      <div class="advisory-text" id="w-disease-risk">—</div>
+    </div>
+
+    <div class="weather-advisory" id="w-spray-box">
+      <div class="advisory-label">💊 Spray Advisory</div>
+      <div class="advisory-text" id="w-spray-advice">—</div>
+    </div>
+
+    <div class="weather-advisory" id="w-rain-box">
+      <div class="advisory-label">🌧️ Rain Advisory</div>
+      <div class="advisory-text" id="w-rain-advice">—</div>
+    </div>
+
+    <!-- 3-Day Forecast -->
+    <div class="forecast-title">📅 Next 3 Forecasts</div>
+    <div class="forecast-row" id="forecast-row"></div>
+
+  </div>
+
+  <div class="weather-error" id="weather-error" style="display:none">
+    ⚠️ Could not fetch weather. Check internet connection.
+  </div>
+</div>
+
+ 
+  </section>
+</div>
+
+
+
+
+
+<!-- ══════════════ PAGE 3: NDVI MAP ══════════════ -->
+<div class="page" id="page-ndvi">
+  <section class="ndvi-section">
+    <div class="results-header">
+      <div class="results-tag">🛰️ Satellite Analysis</div>
+      <h2>NDVI Health Map</h2>
+      <p>Vegetation index computed from your field image</p>
+    </div>
+
+    <div class="ndvi-grid-field">
+
+      <!-- Field Comparison -->
+      <div class="ndvi-card compare-card">
+        <h3>📷 Field Comparison</h3>
+        <div class="compare-row">
+          <div class="compare-box">
+            <div class="compare-label">Original Image</div>
+            <img id="ndvi-original" alt="Original" style="width:100%;height:260px;object-fit:cover;border-radius:10px;border:1px solid var(--border);">
+          </div>
+          <div class="compare-box">
+            <div class="compare-label">NDVI Heatmap</div>
+            <canvas id="ndviCanvas" style="width:100%;height:260px;border-radius:10px;border:1px solid var(--border);display:block;"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vegetation Health Score -->
+      <div class="ndvi-card gauge-card">
+        <h3>📊 Vegetation Health Score</h3>
+        <div class="gauge-container">
+          <canvas id="gaugeCanvas" width="200" height="120"></canvas>
+          <div class="gauge-score" id="gauge-score">—</div>
+          <div class="gauge-label" id="gauge-label">Analyzing...</div>
+        </div>
+        <div class="ndvi-legend">
+          <div class="legend-row"><div class="legend-color" style="background:#8B0000"></div><span>Below 0 — Bare soil</span></div>
+          <div class="legend-row"><div class="legend-color" style="background:#FF4500"></div><span>0.0–0.2 — Severe Disease</span></div>
+          <div class="legend-row"><div class="legend-color" style="background:#FFD700"></div><span>0.2–0.4 — Moderate Stress</span></div>
+          <div class="legend-row"><div class="legend-color" style="background:#90EE90"></div><span>0.4–0.6 — Mild Stress</span></div>
+          <div class="legend-row"><div class="legend-color" style="background:#006400"></div><span>0.6–1.0 — Healthy Crop</span></div>
+        </div>
+      </div>
+
+      <!-- Zone Breakdown -->
+      <div class="ndvi-card zone-card">
+        <h3>🌾 Field Zone Breakdown</h3>
+        <div class="zone-list">
+          <div class="zone-item"><div class="zone-dot" id="north-dot" style="background:#006400"></div><div class="zone-info"><div class="zone-name">Zone A — North</div><div class="zone-bar"><div id="north-bar" class="zone-fill" style="width:0%"></div></div><div class="zone-val" id="north-text">Calculating...</div></div></div>
+          <div class="zone-item"><div class="zone-dot" id="south-dot" style="background:#FFD700"></div><div class="zone-info"><div class="zone-name">Zone B — South</div><div class="zone-bar"><div id="south-bar" class="zone-fill" style="width:0%"></div></div><div class="zone-val" id="south-text">Calculating...</div></div></div>
+          <div class="zone-item"><div class="zone-dot" id="east-dot" style="background:#FFD700"></div><div class="zone-info"><div class="zone-name">Zone C — East</div><div class="zone-bar"><div id="east-bar" class="zone-fill" style="width:0%"></div></div><div class="zone-val" id="east-text">Calculating...</div></div></div>
+          <div class="zone-item"><div class="zone-dot" id="west-dot" style="background:#006400"></div><div class="zone-info"><div class="zone-name">Zone D — West</div><div class="zone-bar"><div id="west-bar" class="zone-fill" style="width:0%"></div></div><div class="zone-val" id="west-text">Calculating...</div></div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ndvi-actions">
+      <button class="btn-primary" onclick="showPage('page-field-results')">← Back to Results</button>
+      <button class="btn-secondary" onclick="resetApp()">🔄 Analyze Another</button>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-logo">🌿 AgriVision</span>
+    <span class="footer-team">Team CodeCultivators · Xypheria 2026 · Alva's Institute of Engineering & Technology</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

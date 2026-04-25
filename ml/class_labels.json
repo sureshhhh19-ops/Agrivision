@@ -1,0 +1,6 @@
+{
+  "early_blight": 0,
+  "healthy": 1,
+  "late_blight": 2,
+  "leaf_spot": 3
+}
